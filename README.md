@@ -35,7 +35,7 @@ O projeto foi construído utilizando o que há de mais moderno no ecossistema de
 Certifique-se de ter o [Node.js](https://nodejs.org/) instalado em sua máquina.
 
 ### Passos para execução:
-
+```bash
 1. **Clone o repositório:**
    git clone [https://github.com/igorcarvalheira/Locare.git](https://github.com/igorcarvalheira/Locare.git)
 
@@ -51,7 +51,8 @@ Certifique-se de ter o [Node.js](https://nodejs.org/) instalado em sua máquina.
 5. **Acesse no navegador:***
     Abra http://localhost:3000 para visualizar a plataforma.
 
-**📂 Estrutura Principal do Projeto**
+## 📂 Estrutura Principal do Projeto
+```text
 src/
 ├── app/                  # Rotas e páginas do Next.js (App Router)
 │   ├── dashboard/        # Painel principal de gerenciamento de imóveis
