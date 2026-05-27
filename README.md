@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Locare 🏠
 
-## Getting Started
+> Plataforma inteligente para gestão de aluguéis, desenvolvida como Trabalho de Conclusão de Curso (TCC).
 
-First, run the development server:
+A **Locare** é um ecossistema projetado para modernizar e automatizar as rotinas imobiliárias. O sistema centraliza contratos, automatiza cobranças, oferece dashboards visuais para acompanhamento financeiro e prepara a base para integrações inteligentes de manutenção.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🚀 Funcionalidades Atuais (MVP)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Tela de Login:** Interface moderna e responsiva com identidade visual própria (paleta roxa), validações e opção de autenticação social.
+- **Dashboard de Gestão:** Painel administrativo contendo:
+  - Gráfico interativo de fluxo de caixa (Cash Flow).
+  - Listagem e gerenciamento de imóveis.
+  - Modais interativos para visualização e cadastro de novos dados.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 🛠️ Stack Tecnológica
 
-To learn more about Next.js, take a look at the following resources:
+O projeto foi construído utilizando o que há de mais moderno no ecossistema de desenvolvimento web:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Framework:** [Next.js](https://nextjs.org/) (App Router)
+- **Linguagem:** [TypeScript](https://www.typescriptlang.org/)
+- **Estilização:** [Tailwind CSS v4](https://tailwindcss.com/) (Engine de estilização de alta performance)
+- **Componentes de UI:** [shadcn/ui](https://ui.shadcn.com/) (Baseado em Radix UI primitives)
+- **Gráficos:** [Recharts](https://recharts.org/)
+- **Ícones:** [Lucide React](https://lucide.dev/)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 📦 Como Executar o Projeto Localmente
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Pré-requisitos
+Certifique-se de ter o [Node.js](https://nodejs.org/) instalado em sua máquina.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Passos para execução:
+
+1. **Clone o repositório:**
+   git clone [https://github.com/igorcarvalheira/Locare.git](https://github.com/igorcarvalheira/Locare.git)
+
+2. **Entre na pasta do projeto:**
+    cd locare-app
+
+3. **Instale as dependências:**
+    npm install
+
+4. **Inicie o servidor de desenvolvimento:**
+    npm run dev
+
+5. **Acesse no navegador:***
+    Abra http://localhost:3000 para visualizar a plataforma.
+
+**📂 Estrutura Principal do Projeto**
+src/
+├── app/                  # Rotas e páginas do Next.js (App Router)
+│   ├── dashboard/        # Painel principal de gerenciamento de imóveis
+│   ├── page.tsx          # Tela de Login (Página Inicial)
+│   └── globals.css       # Estilos globais e tokens do Tailwind v4
+├── components/           # Componentes modulares reutilizáveis
+│   ├── dashboard/        # Componentes específicos do painel (gráficos, sidebar)
+│   └── ui/               # Blocos fundamentais de interface (botões, inputs, tabelas)
+└── lib/                  # Funções utilitárias e configurações gerais
