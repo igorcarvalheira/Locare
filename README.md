@@ -50,6 +50,7 @@ Certifique-se de ter o [Node.js](https://nodejs.org/) instalado em sua máquina.
 
 5. **Acesse no navegador:***
     Abra http://localhost:3000 para visualizar a plataforma.
+```
 
 ## 📂 Estrutura Principal do Projeto
 ```text
@@ -62,3 +63,4 @@ src/
 │   ├── dashboard/        # Componentes específicos do painel (gráficos, sidebar)
 │   └── ui/               # Blocos fundamentais de interface (botões, inputs, tabelas)
 └── lib/                  # Funções utilitárias e configurações gerais
+```
