@@ -3,6 +3,18 @@
 > Ciclo SDD 2/N — Locare
 > Etapa do fluxo (Fig. 1 do TCC): **Escrita da Especificação**
 > Próxima etapa: Alinhamento de Contratos → Execução Autônoma
+>
+> **Faseamento da implementação:** esta spec descreve o ciclo de
+> autenticação por completo, mas a implementação é fatiada em três partes
+> para manter cada mudança revisável:
+> - **Fase A (banco):** tabela `profiles`, RLS, trigger `handle_new_user`,
+>   grants. — ✅ concluída e aplicada via migration.
+> - **Fase B (fundação de sessão):** clientes Supabase browser/server,
+>   `proxy.ts`, proteção de `/dashboard`. Não inclui telas.
+> - **Fase C (telas e fluxos):** login, cadastro, logout, mensagens de
+>   erro genéricas, aviso de confirmação, rota de callback de e-mail.
+> Cada fase só implementa o subconjunto correspondente das regras e
+> critérios abaixo — não antecipar regras de fases futuras.
 
 ## 1. Objetivo
 
@@ -41,11 +53,13 @@ fictício) em isolamento real entre proprietários.
    segundo `insert`.
 3. Um usuário só pode ler/editar o próprio `profiles` (RLS por `auth.uid() = id`).
 4. `updated_at` é mantido por trigger de banco, nunca setado pelo cliente.
-5. Senha mínima de **8 caracteres**, configurado em Authentication →
-   Sign In / Providers → Email no dashboard do Supabase. O mínimo de 8 é
-   um requisito próprio deste projeto (dados financeiros de locação), não
-   necessariamente o padrão de fábrica — confirmar o valor atual na
-   interface antes de assumir.
+5. Senha mínima de **8 caracteres**. Este valor vive em **dois lugares**
+   que devem ser mantidos coerentes: `supabase/config.toml`
+   (`minimum_password_length`, fonte versionada/reproduzível, também usada
+   pelo ambiente local via `supabase start`) e o dashboard de produção
+   (Authentication → Sign In / Providers → Email). O mínimo de 8 é um
+   requisito próprio deste projeto (dados financeiros de locação), não
+   necessariamente o padrão de fábrica.
 6. Confirmação de e-mail **obrigatória** antes do primeiro login — não
    desativar por conveniência.
 7. Mensagens de erro de autenticação são **sempre genéricas** e nunca
@@ -107,6 +121,13 @@ fictício) em isolamento real entre proprietários.
   a exceção deixaria um `auth.users` sem `profiles` correspondente,
   violando a Regra 1. O log serve só para diagnóstico; a falha continua
   abortando o signup (comportamento seguro).
+- **Rota de callback de confirmação de e-mail.** Como a confirmação de
+  e-mail é obrigatória (Regra 6), a aplicação precisa de um route handler
+  (padrão Supabase: `/auth/confirm` ou `/auth/callback`) que processa o
+  token do link enviado por e-mail e estabelece a sessão. Sem essa rota,
+  o usuário clica no link de confirmação e não completa o fluxo. **Escopo:
+  pertence ao ciclo de telas (Prompt 3), não à fundação de sessão
+  (Prompt 2)** — anotado aqui para não ser esquecido.
 - **Redirect URLs**: `localhost:3000` e a futura URL de produção (Vercel)
   precisam estar cadastradas em Authentication → URL Configuration no
   dashboard do Supabase — passo operacional, fora do código, fácil de
