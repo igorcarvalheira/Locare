@@ -82,6 +82,33 @@ fictício) em isolamento real entre proprietários.
    exclusivamente a chave `publishable` (client-side). A `secret key`
    nunca aparece em código de autenticação — ela já está reservada só
    para scripts server-side pontuais (regra herdada do AGENTS.md).
+11. **Limites de tamanho de input (validados no servidor).** As Server
+   Actions de auth impõem tetos antes de qualquer processamento pesado ou
+   chamada ao Supabase: `email` ≤ 254 caracteres (limite prático da
+   RFC 5321), `password` ≤ 72 caracteres (limite efetivo do bcrypt —
+   além disso é truncado), `full_name` ≤ 100. Motivo: a Server Action é
+   alcançável por POST direto (não só pela UI), então o input real não é
+   limitado pelo que o formulário do browser permite — sem teto, um
+   payload gigante gera custo de CPU inútil (ex.: regex sobre string de
+   megabytes) e é repassado ao Supabase à toa.
+12. **Sanitização de `full_name`.** Além de `trim()` e limite de tamanho,
+   remover caracteres de controle e caracteres invisíveis/de formatação
+   Unicode (ex.: zero-width space U+200B, right-to-left override U+202E —
+   vetor conhecido de spoofing visual de nome). Não é XSS (o React escapa
+   na renderização), mas é higiene de integridade: impede nomes
+   visualmente enganosos no dashboard e em relatórios futuros.
+
+> **Dívidas de segurança conhecidas e aceitas para o MVP** (registradas na
+> auditoria da fatia de cadastro, não bloqueiam):
+> - *Timing side-channel* entre "conta nova" e "e-mail já existe" no
+>   `signUp`: inerente à API do Supabase, não mitigável no nosso código.
+>   Aceitável sem adversário medindo latência em escala.
+> - *Redirect URLs em produção*: o `emailRedirectTo` depende inteiramente
+>   do allow-list do Supabase (não há backstop no código). Em produção, a
+>   lista deve conter a URL exata do deploy, NUNCA um wildcard aberto.
+> - *CSV/formula injection*: prospectivo. Se algum dia houver exportação de
+>   `full_name`/`email` para planilha, prefixar valores que comecem com
+>   `= + - @` para neutralizar execução de fórmula.
 
 ## 5. Segurança de Sessão e Infraestrutura
 
@@ -149,6 +176,17 @@ fictício) em isolamento real entre proprietários.
 > inquilino provavelmente vai precisar ver nome/telefone do locador — a
 > policy de RLS vai precisar de uma regra adicional então. Não é uma ação
 > agora, só um ponto de atenção para não travar aquele ciclo depois.
+>
+> **Portal do inquilino (evolução planejada, pós-MVP do locador).** O TCC
+> já prevê "portais logados para inquilinos" como diferencial competitivo.
+> Isso introduz papéis distintos (locador vs. inquilino) com permissões
+> diferentes sobre os mesmos dados — inquilino poderia abrir chamados de
+> manutenção, contatar o locador e enviar documentos. É viável e o RLS foi
+> adotado desde o início justamente para suportar essa expansão multi-perfil
+> sem refatoração estrutural. Fica FORA do escopo do MVP atual (que foca no
+> fluxo do locador); requer sua própria spec, com modelo de papéis, policies
+> de RLS por papel, e rotas/telas separadas. Pré-requisito: o núcleo do
+> locador (auth + properties + manutenções) precisa estar funcional antes.
 
 ## 7. Critérios de Aceitação
 

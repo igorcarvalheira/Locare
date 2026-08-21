@@ -3,33 +3,36 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Home, Mail, Lock, Eye, EyeOff } from "lucide-react"
-import { login } from "./actions"
+import { Home, Mail, Lock, User, Eye, EyeOff } from "lucide-react"
+import { signup } from "./actions"
 import { BrandPanel } from "@/components/auth/brand-panel"
 
-export default function LoginPage() {
+type Notice = { variant: "error" | "success"; message: string } | null
+
+export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false)
+  const [fullName, setFullName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [rememberMe, setRememberMe] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [notice, setNotice] = useState<Notice>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError(null)
+    setNotice(null)
     setIsSubmitting(true)
 
     const formData = new FormData()
+    formData.set("full_name", fullName)
     formData.set("email", email)
     formData.set("password", password)
 
     try {
-      const result = await login(formData)
-      if (result?.error) {
-        setError(result.error)
-      }
+      const result = await signup(formData)
+      setNotice({
+        variant: result.ok ? "success" : "error",
+        message: result.message,
+      })
     } finally {
       setIsSubmitting(false)
     }
@@ -50,12 +53,32 @@ export default function LoginPage() {
 
           {/* Textos */}
           <div className="space-y-2">
-            <h1 className="text-2xl font-bold text-slate-900">Bem-vindo de volta</h1>
-            <p className="text-gray-500">Insira seus dados para acessar seu painel.</p>
+            <h1 className="text-2xl font-bold text-slate-900">Crie sua conta</h1>
+            <p className="text-gray-500">Comece a gerenciar seus imóveis hoje mesmo.</p>
           </div>
 
           {/* Formulário */}
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Campo Nome completo */}
+            <div className="space-y-2">
+              <label htmlFor="full_name" className="text-sm font-medium text-slate-700">
+                Nome completo
+              </label>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Input
+                  id="full_name"
+                  name="full_name"
+                  type="text"
+                  autoComplete="name"
+                  placeholder="Seu nome completo"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  className="pl-10 bg-gray-50 border-gray-300 focus:ring-purple-600 focus:border-purple-600 focus-visible:ring-purple-600"
+                />
+              </div>
+            </div>
+
             {/* Campo E-mail */}
             <div className="space-y-2">
               <label htmlFor="email" className="text-sm font-medium text-slate-700">
@@ -87,7 +110,7 @@ export default function LoginPage() {
                   id="password"
                   name="password"
                   type={showPassword ? "text" : "password"}
-                  autoComplete="current-password"
+                  autoComplete="new-password"
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -103,28 +126,17 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {/* Ações Secundárias */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Checkbox
-                  id="remember"
-                  checked={rememberMe}
-                  onCheckedChange={(checked) => setRememberMe(checked as boolean)}
-                  className="border-gray-300 data-[state=checked]:bg-purple-600 data-[state=checked]:border-purple-600"
-                />
-                <label htmlFor="remember" className="text-sm text-gray-600 cursor-pointer">
-                  Lembrar de mim
-                </label>
-              </div>
-              <a href="#" className="text-sm text-purple-600 hover:text-purple-700 font-medium">
-                Esqueci minha senha
-              </a>
-            </div>
-
-            {/* Mensagem de erro */}
-            {error && (
-              <p className="text-sm text-red-600" role="alert">
-                {error}
+            {/* Mensagem de erro ou aviso neutro de confirmação */}
+            {notice && (
+              <p
+                className={
+                  notice.variant === "error"
+                    ? "text-sm text-red-600"
+                    : "text-sm text-sky-700"
+                }
+                role="alert"
+              >
+                {notice.message}
               </p>
             )}
 
@@ -134,7 +146,7 @@ export default function LoginPage() {
               disabled={isSubmitting}
               className="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-2.5 disabled:opacity-70"
             >
-              {isSubmitting ? "Entrando..." : "Entrar na plataforma"}
+              {isSubmitting ? "Cadastrando..." : "Criar conta"}
             </Button>
 
             {/* Divisor */}
@@ -171,15 +183,15 @@ export default function LoginPage() {
                   d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                 />
               </svg>
-              Entrar com Google
+              Cadastrar com Google
             </Button>
           </form>
 
           {/* Rodapé */}
           <p className="text-center text-sm text-gray-600">
-            Ainda não tem uma conta?{" "}
-            <a href="/signup" className="text-purple-600 hover:text-purple-700 font-medium">
-              Cadastre-se
+            Já tem uma conta?{" "}
+            <a href="/" className="text-purple-600 hover:text-purple-700 font-medium">
+              Entrar
             </a>
           </p>
         </div>
