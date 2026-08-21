@@ -5,16 +5,33 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Home, Mail, Lock, Eye, EyeOff } from "lucide-react"
+import { login } from "./actions"
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [rememberMe, setRememberMe] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log("[v0] Login attempt:", { email, rememberMe })
+    setError(null)
+    setIsSubmitting(true)
+
+    const formData = new FormData()
+    formData.set("email", email)
+    formData.set("password", password)
+
+    try {
+      const result = await login(formData)
+      if (result?.error) {
+        setError(result.error)
+      }
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -47,7 +64,9 @@ export default function LoginPage() {
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <Input
                   id="email"
+                  name="email"
                   type="email"
+                  autoComplete="email"
                   placeholder="seu@email.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -65,7 +84,9 @@ export default function LoginPage() {
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <Input
                   id="password"
+                  name="password"
                   type={showPassword ? "text" : "password"}
+                  autoComplete="current-password"
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -99,12 +120,20 @@ export default function LoginPage() {
               </a>
             </div>
 
+            {/* Mensagem de erro */}
+            {error && (
+              <p className="text-sm text-red-600" role="alert">
+                {error}
+              </p>
+            )}
+
             {/* Botão Primário */}
             <Button
               type="submit"
-              className="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-2.5"
+              disabled={isSubmitting}
+              className="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-2.5 disabled:opacity-70"
             >
-              Entrar na plataforma
+              {isSubmitting ? "Entrando..." : "Entrar na plataforma"}
             </Button>
 
             {/* Divisor */}

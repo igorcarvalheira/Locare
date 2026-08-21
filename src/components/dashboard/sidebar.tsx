@@ -11,6 +11,7 @@ import {
 } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils"
+import { logout } from "@/app/dashboard/actions"
 
 const navItems = [
   { icon: Home, label: "Dashboard", id: "dashboard" },
@@ -77,9 +78,14 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
             <p className="text-sm font-semibold text-slate-900 truncate">Igor Carvalheira</p>
             <p className="text-xs text-slate-500">Administrador</p>
           </div>
-          <button className="p-2 text-slate-400 hover:text-violet-600 hover:bg-violet-50 rounded-lg transition-colors">
-            <LogOut className="h-4 w-4" />
-          </button>
+          <form action={logout}>
+            <button
+              type="submit"
+              className="p-2 text-slate-400 hover:text-violet-600 hover:bg-violet-50 rounded-lg transition-colors"
+            >
+              <LogOut className="h-4 w-4" />
+            </button>
+          </form>
         </div>
       </div>
     </aside>
