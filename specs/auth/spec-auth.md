@@ -150,11 +150,36 @@ fictício) em isolamento real entre proprietários.
   abortando o signup (comportamento seguro).
 - **Rota de callback de confirmação de e-mail.** Como a confirmação de
   e-mail é obrigatória (Regra 6), a aplicação precisa de um route handler
-  (padrão Supabase: `/auth/confirm` ou `/auth/callback`) que processa o
-  token do link enviado por e-mail e estabelece a sessão. Sem essa rota,
-  o usuário clica no link de confirmação e não completa o fluxo. **Escopo:
-  pertence ao ciclo de telas (Prompt 3), não à fundação de sessão
-  (Prompt 2)** — anotado aqui para não ser esquecido.
+  (implementado em `/auth/confirm`) que processa o token do link e
+  estabelece a sessão. A rota usa o fluxo `token_hash` + `type` →
+  `verifyOtp` (padrão recomendado pelo Supabase para SSR/App Router).
+- **Template de e-mail "Confirm signup" (passo operacional, dashboard).**
+  A rota `/auth/confirm` só funciona se o template de e-mail for
+  customizado para enviar o link no formato que ela espera. O template
+  PADRÃO do Supabase usa `{{ .ConfirmationURL }}`, que NÃO é compatível —
+  com ele, a confirmação falha silenciosamente (cai na página de erro
+  mesmo com o código correto). É preciso editar, em Authentication →
+  Emails → "Confirm signup" no dashboard, o link para:
+  `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email`.
+  Passo fora do código, fácil de esquecer — mesma categoria das Redirect
+  URLs. (Não versionado no repo; só teria efeito no `config.toml` se o
+  projeto usasse Supabase local, o que não é o caso.)
+  > **DEPENDE DE SMTP CUSTOMIZADO — pendência conhecida (adiada).** No
+  > plano free sem SMTP próprio, o Supabase NÃO permite editar o template
+  > (fica travado no padrão `{{ .ConfirmationURL }}`). Logo, o teste
+  > ponta a ponta do fluxo de confirmação por e-mail está PENDENTE até que
+  > um SMTP customizado (ex.: Resend) seja configurado. Três itens ficam
+  > amarrados a essa configuração futura, a fazer JUNTOS:
+  >   1. Configurar SMTP no dashboard (Authentication → Emails → SMTP).
+  >   2. Editar o template "Confirm signup" com o link token_hash acima.
+  >   3. Testar o ciclo real: cadastro → e-mail → clique → /auth/confirm →
+  >      sessão → /dashboard.
+  > Estado atual: a rota `/auth/confirm` e a página de erro estão
+  > implementadas e revisadas, mas NÃO exercitadas ponta a ponta. Enquanto
+  > isso, usuários de teste são confirmados manualmente pelo dashboard
+  > (Authentication → Users). SMTP é obrigatório para produção de qualquer
+  > forma (o default de 2 e-mails/hora é inviável), então o momento natural
+  > de fechar isto é junto do deploy.
 - **Redirect URLs**: `localhost:3000` e a futura URL de produção (Vercel)
   precisam estar cadastradas em Authentication → URL Configuration no
   dashboard do Supabase — passo operacional, fora do código, fácil de

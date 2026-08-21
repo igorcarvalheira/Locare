@@ -85,10 +85,17 @@ que crie ou altere schema de banco, tipos de dados, ou regras de negócio:
 - ✅ Autenticação — Fase A (banco) e Fase B (fundação de sessão) prontas:
   clientes Supabase em `src/lib/supabase/` (`client.ts`, `server.ts`,
   `session.ts`) e `src/proxy.ts` protegendo `/dashboard`.
-- ⏳ Autenticação — Fase C (telas de login/cadastro, logout, mensagens de
-  erro genéricas, rota de callback de confirmação de e-mail) PENDENTE. As
-  telas em `src/app/page.tsx` e `src/app/dashboard/` ainda são o mockup
-  estático do v0.dev, sem lógica de auth conectada.
+- ✅ Autenticação — Fase C: login (`src/app/page.tsx` + `actions.ts`)
+  implementado e testado ponta a ponta. Cadastro (`src/app/signup/`,
+  `signUp` + validação endurecida no servidor) implementado e testado —
+  usuário criado em `auth.users` e `profile` populado pelo trigger. Rota
+  de callback `/auth/confirm` e página de erro implementadas e revisadas,
+  página de erro testada visualmente — mas o fluxo de confirmação por
+  e-mail em si **não foi testado ponta a ponta**: depende de configurar
+  SMTP customizado (ver `specs/auth/spec-auth.md`). Até lá, usuários são
+  confirmados manualmente pelo dashboard do Supabase.
+- Módulo de autenticação estruturalmente completo; pendência conhecida é
+  de configuração externa (SMTP), não de código.
 - ❌ Tabelas `tenants`, `contracts`, `maintenance_requests`, `payments`
   ainda não existem.
 - Ref.: `specs/auth/spec-auth.md` descreve o ciclo de autenticação completo.
