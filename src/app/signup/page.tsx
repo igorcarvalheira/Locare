@@ -2,15 +2,17 @@
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Home, Mail, Lock, User, Eye, EyeOff } from "lucide-react"
+import { Home, Mail, Lock, User } from "lucide-react"
 import { signup } from "./actions"
 import { BrandPanel } from "@/components/auth/brand-panel"
+import { AuthField } from "@/components/auth/auth-field"
+
+const focusRing =
+  "rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
 
 type Notice = { variant: "error" | "success"; message: string } | null
 
 export default function SignupPage() {
-  const [showPassword, setShowPassword] = useState(false)
   const [fullName, setFullName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -41,98 +43,72 @@ export default function SignupPage() {
   return (
     <div className="min-h-screen flex">
       {/* Coluna Esquerda - Formulário */}
-      <div className="w-full lg:w-1/2 bg-white flex items-center justify-center p-8">
-        <div className="w-full max-w-md space-y-8">
+      <div className="w-full lg:w-1/2 bg-background flex items-center justify-center p-8">
+        <div className="w-full max-w-md space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-400 ease-out fill-mode-both">
           {/* Logo */}
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center">
-              <Home className="w-6 h-6 text-white" />
+            <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+              <Home className="w-6 h-6 text-primary-foreground" />
             </div>
-            <span className="text-2xl font-bold text-slate-900">Locare</span>
+            <span className="font-display text-2xl font-semibold text-foreground">
+              Locare
+            </span>
           </div>
 
           {/* Textos */}
           <div className="space-y-2">
-            <h1 className="text-2xl font-bold text-slate-900">Crie sua conta</h1>
-            <p className="text-gray-500">Comece a gerenciar seus imóveis hoje mesmo.</p>
+            <h1 className="font-display text-2xl font-semibold text-foreground">
+              Crie sua conta
+            </h1>
+            <p className="text-muted-foreground">
+              Comece a gerenciar seus imóveis hoje mesmo.
+            </p>
           </div>
 
           {/* Formulário */}
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Campo Nome completo */}
-            <div className="space-y-2">
-              <label htmlFor="full_name" className="text-sm font-medium text-slate-700">
-                Nome completo
-              </label>
-              <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <Input
-                  id="full_name"
-                  name="full_name"
-                  type="text"
-                  autoComplete="name"
-                  placeholder="Seu nome completo"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  className="pl-10 bg-gray-50 border-gray-300 focus:ring-purple-600 focus:border-purple-600 focus-visible:ring-purple-600"
-                />
-              </div>
-            </div>
+            <AuthField
+              id="full_name"
+              name="full_name"
+              label="Nome completo"
+              icon={User}
+              autoComplete="name"
+              placeholder="Seu nome completo"
+              value={fullName}
+              onChange={setFullName}
+            />
 
-            {/* Campo E-mail */}
-            <div className="space-y-2">
-              <label htmlFor="email" className="text-sm font-medium text-slate-700">
-                E-mail
-              </label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  placeholder="seu@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="pl-10 bg-gray-50 border-gray-300 focus:ring-purple-600 focus:border-purple-600 focus-visible:ring-purple-600"
-                />
-              </div>
-            </div>
+            <AuthField
+              id="email"
+              name="email"
+              label="E-mail"
+              icon={Mail}
+              type="email"
+              autoComplete="email"
+              placeholder="seu@email.com"
+              value={email}
+              onChange={setEmail}
+            />
 
-            {/* Campo Senha */}
-            <div className="space-y-2">
-              <label htmlFor="password" className="text-sm font-medium text-slate-700">
-                Senha
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <Input
-                  id="password"
-                  name="password"
-                  type={showPassword ? "text" : "password"}
-                  autoComplete="new-password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="pl-10 pr-10 bg-gray-50 border-gray-300 focus:ring-purple-600 focus:border-purple-600 focus-visible:ring-purple-600"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                </button>
-              </div>
-            </div>
+            <AuthField
+              id="password"
+              name="password"
+              label="Senha"
+              icon={Lock}
+              autoComplete="new-password"
+              placeholder="••••••••"
+              value={password}
+              onChange={setPassword}
+              isPassword
+            />
 
             {/* Mensagem de erro ou aviso neutro de confirmação */}
             {notice && (
               <p
                 className={
                   notice.variant === "error"
-                    ? "text-sm text-red-600"
-                    : "text-sm text-sky-700"
+                    ? "text-sm text-destructive"
+                    : "text-sm text-primary"
                 }
                 role="alert"
               >
@@ -141,30 +117,24 @@ export default function SignupPage() {
             )}
 
             {/* Botão Primário */}
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-2.5 disabled:opacity-70"
-            >
+            <Button type="submit" disabled={isSubmitting} className="w-full">
               {isSubmitting ? "Cadastrando..." : "Criar conta"}
             </Button>
 
             {/* Divisor */}
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-200"></div>
+                <div className="w-full border-t border-border" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-4 bg-white text-gray-500">ou continue com</span>
+                <span className="px-4 bg-background text-muted-foreground">
+                  ou continue com
+                </span>
               </div>
             </div>
 
             {/* Botão Google */}
-            <Button
-              type="button"
-              variant="outline"
-              className="w-full border-gray-300 bg-white hover:bg-gray-50 text-slate-700 font-medium py-2.5"
-            >
+            <Button type="button" variant="outline" className="w-full">
               <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
                 <path
                   fill="#4285F4"
@@ -188,9 +158,12 @@ export default function SignupPage() {
           </form>
 
           {/* Rodapé */}
-          <p className="text-center text-sm text-gray-600">
+          <p className="text-center text-sm text-muted-foreground">
             Já tem uma conta?{" "}
-            <a href="/" className="text-purple-600 hover:text-purple-700 font-medium">
+            <a
+              href="/login"
+              className={`text-primary font-medium transition-colors duration-150 hover:text-primary/80 ${focusRing}`}
+            >
               Entrar
             </a>
           </p>

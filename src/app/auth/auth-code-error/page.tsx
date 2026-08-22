@@ -6,25 +6,27 @@ export default function AuthCodeErrorPage() {
   return (
     <div className="min-h-screen flex">
       {/* Coluna Esquerda - Mensagem */}
-      <div className="w-full lg:w-1/2 bg-white flex items-center justify-center p-8">
-        <div className="w-full max-w-md space-y-8">
+      <div className="w-full lg:w-1/2 bg-background flex items-center justify-center p-8">
+        <div className="w-full max-w-md space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-400 ease-out fill-mode-both">
           {/* Logo */}
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center">
-              <Home className="w-6 h-6 text-white" />
+            <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+              <Home className="w-6 h-6 text-primary-foreground" />
             </div>
-            <span className="text-2xl font-bold text-slate-900">Locare</span>
+            <span className="font-display text-2xl font-semibold text-foreground">
+              Locare
+            </span>
           </div>
 
           {/* Mensagem de erro */}
           <div className="space-y-4">
-            <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
-              <AlertCircle className="w-6 h-6 text-red-600" />
+            <div className="w-12 h-12 rounded-full bg-destructive/10 flex items-center justify-center">
+              <AlertCircle className="w-6 h-6 text-destructive" />
             </div>
-            <h1 className="text-2xl font-bold text-slate-900">
+            <h1 className="font-display text-2xl font-semibold text-foreground">
               Link inválido ou expirado
             </h1>
-            <p className="text-gray-500">
+            <p className="text-muted-foreground">
               Não foi possível confirmar seu e-mail. O link pode ter expirado
               ou já ter sido usado. Tente fazer login normalmente ou refaça o
               cadastro para receber um novo link de confirmação.
@@ -33,17 +35,10 @@ export default function AuthCodeErrorPage() {
 
           {/* Ações */}
           <div className="space-y-3">
-            <Button
-              asChild
-              className="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-2.5"
-            >
-              <a href="/">Voltar para o login</a>
+            <Button asChild className="w-full">
+              <a href="/login">Voltar para o login</a>
             </Button>
-            <Button
-              asChild
-              variant="outline"
-              className="w-full border-gray-300 bg-white hover:bg-gray-50 text-slate-700 font-medium py-2.5"
-            >
+            <Button asChild variant="outline" className="w-full">
               <a href="/signup">Cadastrar novamente</a>
             </Button>
           </div>
